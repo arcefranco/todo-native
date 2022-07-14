@@ -1,45 +1,93 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Button, Platform } from 'react-native'
 import Layout from '../components/Layout'
-import React, {useState, useEffect} from 'react'
+import * as Notification from 'expo-notifications'
+import React, {useState, useEffect, useRef} from 'react'
+import  DateTimePicker  from '@react-native-community/datetimepicker'
 import { getTask, saveTask, updateTask } from '../api'
+
+
+Notification.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: true
+  })
+});
+
 
 export default function TaskFormScreen({navigation, route}) {
 
-    const [task, setTask] = useState({
+const [time, setTime] = useState(new Date(Date.now()))
+const [editing, setEditing] = useState(false)
+
+
+
+
+const onClick = async () => {
+
+await Notification.scheduleNotificationAsync({
+    content: {
+      title: task.title,
+      body: task.description,
+      data: {data: "data goes here"}
+    },
+    trigger: {
+      hour: time.getHours(),
+      minute: time.getMinutes()
+      
+    }
+  })
+}
+
+const [task, setTask] = useState({
         title: '',
         description: ''
     })
 
-    const [editing, setEditing] = useState(false)
 
-    const handleChange = (name, value) => {
+
+const handleChange = (name, value) => {
         setTask({
             ...task,
             [name]: value
         })
-    }
+}
 
-    const handleSubmit = () => {
-        saveTask(task)
+const handleSubmit =  () => {
+    
+      Promise.all([
+        onClick(),
+        saveTask(task),
         navigation.navigate('HomeScreen')
-    }
-    const handleUpdateSubmit = () => {
+      ])
+      
+}
+
+
+const handleUpdateSubmit = () => {
         updateTask(route.params.id,task)
         navigation.navigate('HomeScreen')
-    }
+}
 
-    useEffect(() => {
-      if(route.params && route.params.id){
-        navigation.setOptions({headerTitle: 'Updating a task'});
-        setEditing(true);
-        (async () =>{
-           const task = await getTask(route.params.id)
-            setTask({title: task.title, description: task.description})
-        })();
+useEffect(() => {
+      
+  
+if(route.params && route.params.id){
+    navigation.setOptions({headerTitle: 'Updating a task'});
+    setEditing(true);
+    (async () =>{
+        const task = await getTask(route.params.id)
+        setTask({title: task.title, description: task.description})
+    })();
         
       }
+    
 
-    }, [])
+})
+
+    
+
+  
     
   return (
     <Layout>
@@ -56,7 +104,18 @@ export default function TaskFormScreen({navigation, route}) {
       placeholderTextColor={'#fff'}
       onChangeText={(text) => handleChange('description', text)}
       value={task.description}
+      />  
+      <DateTimePicker
+      value={time}
+      mode={'time'}
+      display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+      is24Hour={true}
+      style={{width:200, backgroundColor:'white'}}
+      on
+       onChange={(event, date) => setTime(date)}   
+
       />
+
 
       <TouchableOpacity style={styles.buttonSave} onPress={editing ? handleUpdateSubmit : handleSubmit}>
             <Text style={styles.buttonText}>{editing ? 'Update task' : 'Save Task'}</Text>

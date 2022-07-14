@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react'
-import { FlatList, RefreshControl } from 'react-native'
+import { FlatList, RefreshControl} from 'react-native'
 import TaskItem from './TaskItem'
 import { useIsFocused } from '@react-navigation/native'
+
 import { getTasks, deleteTask} from '../api'
 
 const TaskList = () => {
@@ -50,7 +51,8 @@ const TaskList = () => {
         onRefresh={onRefresh}
         
         />
-    }
+        
+    }  
     />
   )
 }
