@@ -9,8 +9,8 @@ const TaskItem = ({task, handleDelete}) => {
     <View style={styles.itemContainer}>
 
         <TouchableOpacity onPress={() => navigation.navigate('TaskFormScreen', {id: task.id})}>
-            <Text style={styles.itemTitle}>{task.title}</Text>
-            <Text style={styles.itemTitle}>{task.description}</Text>
+            <Text style={styles.itemTitle}>Title: {task.title}</Text>
+            <Text style={styles.itemTitle}>Description: {task.description}</Text>
         </TouchableOpacity>
 
 
@@ -31,7 +31,7 @@ const TaskItem = ({task, handleDelete}) => {
 
 const styles = StyleSheet.create({
     itemContainer: {
-        backgroundColor: '#333333',
+        backgroundColor: 'black',
         padding:20,
         marginVertical:8,
         borderRadius: 8,
@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     itemTitle: {
-        color:'white'
+        color:'white',
+        margin:3
     }
 
 })

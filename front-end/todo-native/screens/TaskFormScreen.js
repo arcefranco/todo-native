@@ -83,7 +83,7 @@ if(route.params && route.params.id){
       }
     
 
-})
+}, [])
 
     
 
@@ -110,7 +110,7 @@ if(route.params && route.params.id){
       mode={'time'}
       display={Platform.OS === 'ios' ? 'spinner' : 'default'}
       is24Hour={true}
-      style={{width:200, backgroundColor:'white'}}
+      style={styles.timeSetter}
       on
        onChange={(event, date) => setTime(date)}   
 
@@ -148,5 +148,11 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         textAlign: 'center'
+    },
+    timeSetter: {
+      width:200, 
+      margin:25,
+      backgroundColor:'#10ac84'
     }
+
 })
